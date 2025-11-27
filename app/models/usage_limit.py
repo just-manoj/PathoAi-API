@@ -9,7 +9,7 @@ class UsageLimit(BaseModel):
     This represents a document in the MongoDB UsageLimit collection.
     """
     id: Optional[str] = None  # MongoDB _id (shown as 'id' in API)
-    date: date
+    date: str
     jrUsed: int
     srUsed: int
     jrLimit: int

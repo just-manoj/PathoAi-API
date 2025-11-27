@@ -159,65 +159,6 @@ Important: Return ONLY valid JSON, no additional text."""
     result = json.loads(clean_text)
     return result
 
-
-# async def call_gpt4o_analysis(image_base64: str, organ: str, clinical_context: str) -> dict:
-#     """
-#     Call OpenAI GPT-4o to analyze the slide image.
-    
-#     Returns:
-#         dict with keys: observation, preliminaryDiagnosis, confidenceLevel, disclaimer
-#     """
-#     client = OpenAI(api_key=OPENAI_TOKEN)
-    
-#     prompt = f"""Analyze this pathology slide image and provide a medical assessment.
-
-# Organ: {organ}
-# Clinical Context: {clinical_context}
-
-# Please provide your analysis in the following JSON format:
-# {{
-#     "observation": "Your detailed observations about the slide",
-#     "preliminaryDiagnosis": "Your preliminary diagnosis based on the slide",
-#     "confidenceLevel": "Low/Medium/High",
-#     "disclaimer": "Medical disclaimer about the analysis"
-# }}
-
-# Important: Return ONLY valid JSON, no additional text."""
-    
-#     response = client.chat.completions.create(
-#         model="gpt-4o",
-#         messages=[
-#             {
-#                 "role": "user",
-#                 "content": [
-#                     {
-#                         "type": "text",
-#                         "text": prompt
-#                     },
-#                     {
-#                         "type": "image_url",
-#                         "image_url": {
-#                             "url": f"data:image/jpeg;base64,{image_base64}"
-#                         }
-#                     }
-#                 ]
-#             }
-#         ],
-#         max_tokens=1024
-#     )
-#     response_text = response.choices[0].message.content
-
-#     clean_text = response_text.strip()
-
-#     if clean_text.startswith("```"):
-#         clean_text = clean_text.replace("```json", "")
-#         clean_text = clean_text.replace("```", "")
-#         clean_text = clean_text.strip()
-
-#     result = json.loads(clean_text)
-#     return result
-
-
 async def call_gemini_25_pro_analysis(image_base64: str, organ: str, clinical_context: str) -> dict:
     """
     Call Google Gemini 2.5 Pro to analyze the slide image.
@@ -287,6 +228,18 @@ async def analyze_slide(
     Returns:
         ApiResponse containing the stored Analysis document with analysis results
     """
+    if slideImage is None:
+        return ApiResponse(status=False, message="slideImage: Field required")
+
+    if organ is None:
+        return ApiResponse(status=False, message="organ: Field required")
+
+    if clinicalContext is None:
+        return ApiResponse(status=False, message="clinicalContext: Field required")
+
+    if model is None:
+        return ApiResponse(status=False, message="model: Field required")
+    
     db = get_database()
     if db is None:
         raise HTTPException(status_code=500, detail="Database client not initialized")
