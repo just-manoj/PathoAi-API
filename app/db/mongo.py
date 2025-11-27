@@ -19,7 +19,7 @@ def connect_to_mongo():
     if mongo_client is not None:
         return
 
-    print("Connecting to MongoDB (lazy, no ping)...")
+    print("Connecting to MongoDB (lazy, no ping)...",MONGODB_URI)
     mongo_client = AsyncIOMotorClient(MONGODB_URI)
     mongo_db = mongo_client[MONGODB_DB]
     print("MongoDB client created (server selection deferred).")

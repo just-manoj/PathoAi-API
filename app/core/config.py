@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Get settings from environment variables
-MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")
+MONGODB_URI = os.getenv("MONGODB_URI")
+if not MONGODB_URI:
+    raise Exception("MONGODB_URI environment variable is missing!")
 MONGODB_DB = os.getenv("MONGODB_DB", "pathoai")
 APP_NAME = os.getenv("APP_NAME", "PathoAi API")
 DEBUG = os.getenv("DEBUG", "False") == "True"
